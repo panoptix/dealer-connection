@@ -1,0 +1,36 @@
+#!/bin/sh
+INTERFACE='<%="#{node[:lxc][:network_interface]}" %>'
+BRIDGE='<%="#{node[:lxc][:bridge_interface]}" %>'
+
+pushd /etc/sysconfig/network-scripts
+
+if [ ! -f ifcfg-$INTERFACE.orig ]; then
+    mv ifcfg-$INTERFACE ifcfg-$INTERFACE.orig
+fi
+
+cat << EOF >> ifcfg-$INTERFACE
+DEVICE="$INTERFACE"
+TYPE="Ethernet"
+NM_CONTROLLED="no"
+ONBOOT="yes"
+BRIDGE="$BRIDGE"
+EOF
+
+cat << EOF >> ifcfg-$BRIDGE
+DEVICE="$BRIDGE"
+TYPE="Bridge"
+NM_CONTROLLED="no"
+ONBOOT="yes"
+DELAY="0"
+STP="off"
+EOF
+
+grep -E '^UUID' ifcfg-$INTERFACE.orig >> ifcfg-$INTERFACE
+grep -E '^HWADDR' ifcfg-$INTERFACE.orig >> ifcfg-$INTERFACE
+grep -E '^BOOTPROTO' ifcfg-$INTERFACE.orig >> ifcfg-$BRIDGE
+grep -E '^IPADDR' ifcfg-$INTERFACE.orig >> ifcfg-$BRIDGE
+grep -E '^NETMASK' ifcfg-$INTERFACE.orig >> ifcfg-$BRIDGE
+grep -E '^GATEWAY' ifcfg-$INTERFACE.orig >> ifcfg-$BRIDGE
+
+popd
+

@@ -1,0 +1,8 @@
+lxc.utsname =  <%= @name %>
+lxc.network.type = veth
+lxc.network.flags = up
+lxc.network.link = <%= @bridge %> 
+lxc.network.ipv4 = <%= @ipaddress %><%=@netmask %>
+lxc.network.name = <%= @interface %>
+lxc.mount = <%= @lxc_path %>/<%= @name %>/fstab
+lxc.rootfs = <%= @lxc_path %>/<%=@name %>/rootfs

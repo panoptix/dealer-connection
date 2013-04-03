@@ -1,0 +1,12 @@
+#!/bin/bash
+# Whatever is needed to clearn out old daemon/service pids from your container
+rm -f $(find /var/run -name '*pid')
+rm -f /var/lock/subsys/*
+# you could use a dhcp client here
+# or you could get your system network scripts to work
+# (Which I've ran into troubles with in containers)
+# (Edit gateway address, domain, and nameserver as need be)
+
+# Initally we don't have any container originated mounts
+rm -f /etc/mtab
+touch /etc/mtab
